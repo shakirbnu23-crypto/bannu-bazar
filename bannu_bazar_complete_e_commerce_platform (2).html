@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bannu Bazar - Complete E-Commerce Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Urdu-friendly Noto Nastaliq / Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        bannu: {
+                            gold: '#f59e0b',
+                            maroon: '#881337',
+                            dark: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white text-xs py-2 px-4 flex justify-between items-center z-40">
+        <div class="container mx-auto flex justify-between items-center">
+            <p class="font-medium flex items-center gap-2">
+                <span class="bg-bannu-gold text-slate-900 font-extrabold px-1.5 py-0.5 rounded text-[10px] uppercase">Special Offer</span>
+                <span>Free Express Delivery across Pakistan on all orders over Rs. 3,000! Use code <strong class="text-bannu-gold">BANNU10</strong> for 10% OFF.</span>
+            </p>
+            <div class="hidden sm:flex items-center space-x-4 text-slate-300">
+                <a href="javascript:void(0)" onclick="openSupportModal('returns')" class="hover:text-white transition-colors"><i class="fa-solid fa-rotate-left mr-1"></i> Returns</a>
+                <a href="javascript:void(0)" onclick="openSupportModal('shipping')" class="hover:text-white transition-colors"><i class="fa-solid fa-truck-fast mr-1"></i> Shipping Rates</a>
+                <a href="javascript:void(0)" onclick="openSupportModal('faq')" class="hover:text-white transition-colors"><i class="fa-solid fa-circle-question mr-1"></i> Help & FAQ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header / Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="container mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+            
+            <!-- Logo -->
+            <a href="javascript:void(0)" onclick="switchView('shop')" class="flex items-center space-x-2 group">
+                <div class="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
+                    B
+                </div>
+                <div>
+                    <span class="text-2xl font-black text-slate-900 tracking-tight">Bannu<span class="text-brand-600">Bazar</span></span>
+                    <span class="block text-[10px] font-bold text-brand-700 tracking-widest uppercase -mt-1">Handcrafted & Authentic</span>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-xl hidden md:block">
+                <div class="relative">
+                    <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search Bannu Khaadi, Peshawari Chappal, Organic Honey, Spices..." class="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                
+                <!-- Admin Dashboard Toggle Button -->
+                <button onclick="openAdminModal()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition-all flex items-center gap-1.5 border border-slate-200">
+                    <i class="fa-solid fa-user-shield text-brand-600"></i>
+                    <span class="hidden sm:inline">Admin Panel</span>
+                </button>
+
+                <!-- Track Order Button -->
+                <button onclick="switchView('track')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition-all flex items-center gap-1.5 border border-slate-200">
+                    <i class="fa-solid fa-location-dot text-brand-600"></i>
+                    <span class="hidden sm:inline">Track Order</span>
+                </button>
+
+                <!-- Wishlist Counter -->
+                <button onclick="switchView('wishlist')" class="relative p-2.5 text-slate-600 hover:text-red-500 hover:bg-slate-100 rounded-xl transition-colors">
+                    <i class="fa-regular fa-heart text-lg"></i>
+                    <span id="wishlistBadge" class="absolute -top-1 -right-1 bg-red-500 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+
+                <!-- Cart Counter Button -->
+                <button onclick="toggleCartDrawer()" class="relative bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="hidden sm:inline text-xs">Cart</span>
+                    <span id="cartBadge" class="bg-white text-brand-700 font-black text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="px-4 pb-3 md:hidden">
+            <div class="relative">
+                <input type="text" id="searchInputMobile" onkeyup="handleSearchMobile()" placeholder="Search Bannu products..." class="w-full bg-slate-100 border border-slate-200 rounded-xl py-2 pl-9 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="mainContainer" class="flex-1">
+
+        <!-- SHOP VIEW -->
+        <div id="shopView">
+            
+            <!-- Hero Banner -->
+            <section class="bg-slate-900 text-white relative overflow-hidden">
+                <div class="absolute inset-0 bg-cover bg-center opacity-25" style="background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80');"></div>
+                <div class="container mx-auto px-4 py-12 md:py-16 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="max-w-2xl text-center md:text-left space-y-4">
+                        <span class="inline-block px-3 py-1 bg-brand-500/20 text-brand-400 border border-brand-500/30 font-bold text-xs rounded-full uppercase tracking-widest">
+                            Direct from Bannu & KP Artisans
+                        </span>
+                        <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                            Authentic Traditional Products Delivered to Your Doorstep
+                        </h1>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Discover pure handcrafted Bannu Khaadi fabric, authentic Peshawari & Bannu Chappals, Waziristan Pine Nuts (Chilgoza), Special Spices, and Organic Products.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
+                            <button onclick="scrollToProducts()" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i> Shop Specials Now
+                            </button>
+                            <button onclick="openSupportModal('shipping')" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-xl transition-all border border-white/20">
+                                <i class="fa-solid fa-truck"></i> Check Shipping Rates
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-auto flex justify-center">
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl max-w-xs text-center space-y-3">
+                            <div class="w-16 h-16 bg-bannu-gold text-slate-900 rounded-2xl mx-auto flex items-center justify-center text-2xl font-black shadow-lg">
+                                🌟
+                            </div>
+                            <h3 class="font-bold text-lg text-white">100% Guaranteed Quality</h3>
+                            <p class="text-xs text-slate-300">Free return and exchange within 7 days if not completely satisfied.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Category Navigation Bar -->
+            <section class="bg-white border-b border-slate-200 sticky top-[65px] z-20 shadow-xs">
+                <div class="container mx-auto px-4 py-3 flex items-center space-x-2 overflow-x-auto custom-scrollbar" id="categoryBar">
+                    <button onclick="filterCategory('all')" id="catBtn-all" class="cat-btn bg-brand-600 text-white font-bold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all shadow-sm">
+                        All Products
+                    </button>
+                    <button onclick="filterCategory('bannu-specials')" id="catBtn-bannu-specials" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all">
+                        ✨ Bannu Specials
+                    </button>
+                    <button onclick="filterCategory('khaadi')" id="catBtn-khaadi" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all">
+                        🧶 Bannu Khaadi Suits
+                    </button>
+                    <button onclick="filterCategory('chappal')" id="catBtn-chappal" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all">
+                        👞 Handcrafted Chappals
+                    </button>
+                    <button onclick="filterCategory('dry-fruits')" id="catBtn-dry-fruits" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all">
+                        🥜 Chilgoza & Dry Fruits
+                    </button>
+                    <button onclick="filterCategory('spices-honey')" id="catBtn-spices-honey" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all">
+                        🍯 Pure Honey & Spices
+                    </button>
+                </div>
+            </section>
+
+            <!-- Products Grid Section -->
+            <section class="container mx-auto px-4 py-8" id="productsSection">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900" id="categoryTitle">All Products</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Showing authentic products with nationwide cash on delivery</p>
+                    </div>
+                    <span id="productCount" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                        8 Items Available
+                    </span>
+                </div>
+
+                <!-- Product Grid Container -->
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Dynamic Javascript products will be injected here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- TRACK ORDER VIEW -->
+        <div id="trackView" class="hidden container mx-auto px-4 py-12 max-w-2xl">
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-900">Track Your Parcel</h2>
+                    <p class="text-xs text-slate-500">Enter your Order Reference ID (e.g., BB-8921) to check live status</p>
+                </div>
+
+                <div class="flex gap-2">
+                    <input type="text" id="trackInput" placeholder="Order ID (e.g., BB-8921)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase font-mono font-bold">
+                    <button onclick="handleTrackOrder()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md transition-all">
+                        Track Now
+                    </button>
+                </div>
+
+                <!-- Tracking Status Results -->
+                <div id="trackResult" class="hidden border-t border-slate-100 pt-6 space-y-4">
+                    <!-- Dynamic tracking timeline -->
+                </div>
+            </div>
+        </div>
+
+        <!-- WISHLIST VIEW -->
+        <div id="wishlistView" class="hidden container mx-auto px-4 py-12">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">My Saved Wishlist</h2>
+                        <p class="text-xs text-slate-500">Products you have saved for later</p>
+                    </div>
+                    <button onclick="switchView('shop')" class="text-xs font-bold text-brand-600 hover:underline">
+                        &larr; Back to Shopping
+                    </button>
+                </div>
+                <div id="wishlistGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <!-- Dynamic wishlist items -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Cart Drawer Overlays -->
+    <div id="cartBackdrop" onclick="toggleCartDrawer()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+    
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Cart Header -->
+        <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-bag-shopping text-brand-400"></i>
+                <h3 class="font-bold text-base">Your Shopping Bag</h3>
+            </div>
+            <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white p-1">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <!-- Dynamic Cart Items -->
+        </div>
+
+        <!-- Cart Summary & Checkout Footer -->
+        <div class="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
+            <!-- Promo Code Input -->
+            <div class="flex gap-2">
+                <input type="text" id="promoInput" placeholder="Promo Code (BANNU10)" class="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs uppercase focus:outline-none focus:ring-1 focus:ring-brand-500 font-mono">
+                <button onclick="applyPromoCode()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors">
+                    Apply
+                </button>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="space-y-1.5 text-xs text-slate-600 border-t border-slate-200 pt-3">
+                <div class="flex justify-between">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal" class="font-bold text-slate-900">Rs. 0</span>
+                </div>
+                <div class="flex justify-between text-emerald-600" id="discountRow" style="display: none;">
+                    <span>Promo Discount</span>
+                    <span id="cartDiscount" class="font-bold">-Rs. 0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Shipping Charges</span>
+                    <span id="cartShipping" class="font-bold text-slate-900">Rs. 200</span>
+                </div>
+                <div class="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
+                    <span>Total Amount</span>
+                    <span id="cartTotal" class="text-brand-600">Rs. 0</span>
+                </div>
+            </div>
+
+            <button onclick="openCheckoutModal()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-4 border-b border-slate-200 bg-slate-900 text-white flex justify-between items-center">
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-lock text-brand-400 mr-2"></i> Secure Checkout</h3>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="p-6 overflow-y-auto space-y-4 custom-scrollbar">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
+                        <input type="text" required id="custName" placeholder="e.g. Ahmad Khan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number (WhatsApp) *</label>
+                        <input type="tel" required id="custPhone" placeholder="0300-1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">City *</label>
+                        <input type="text" required id="custCity" placeholder="Bannu, Peshawar, Lahore, etc." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Email Address (Optional)</label>
+                        <input type="email" id="custEmail" placeholder="ahmad@example.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Complete Delivery Address *</label>
+                    <textarea required id="custAddress" rows="2" placeholder="House/Shop #, Street Name, Sector/Area Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+
+                <!-- Payment Methods -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Select Payment Method</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label class="border border-slate-200 rounded-xl p-3 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                            <input type="radio" name="paymentMethod" value="COD" checked class="text-brand-600 focus:ring-brand-500">
+                            <div class="text-xs">
+                                <p class="font-bold text-slate-800">Cash on Delivery</p>
+                                <p class="text-[10px] text-slate-500">Pay when parcel arrives</p>
+                            </div>
+                        </label>
+                        <label class="border border-slate-200 rounded-xl p-3 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                            <input type="radio" name="paymentMethod" value="JazzCash" class="text-brand-600 focus:ring-brand-500">
+                            <div class="text-xs">
+                                <p class="font-bold text-slate-800">JazzCash / EasyPaisa</p>
+                                <p class="text-[10px] text-slate-500">Mobile Wallet Transfer</p>
+                            </div>
+                        </label>
+                        <label class="border border-slate-200 rounded-xl p-3 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                            <input type="radio" name="paymentMethod" value="Bank" class="text-brand-600 focus:ring-brand-500">
+                            <div class="text-xs">
+                                <p class="font-bold text-slate-800">Online Bank</p>
+                                <p class="text-[10px] text-slate-500">Direct Account Transfer</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Summary Box -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div>
+                        <p class="text-xs text-slate-500">Total Payable Amount</p>
+                        <p id="checkoutFinalAmount" class="text-lg font-black text-brand-600">Rs. 0</p>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">
+                        Confirm Order Now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CUSTOMER SUPPORT & POLICIES MODAL -->
+    <div id="supportModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative">
+            
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-200 bg-slate-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white text-lg font-bold">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">Customer Help & Support</h3>
+                        <p class="text-xs text-slate-300">Bannu Bazar Help Center & Policies</p>
+                    </div>
+                </div>
+                <button onclick="closeSupportModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tab Navigation Header -->
+            <div class="bg-slate-100 border-b border-slate-200 p-2 flex flex-wrap gap-2 text-xs sm:text-sm font-semibold">
+                <button id="tabBtnReturns" onclick="switchSupportTab('returns')" class="px-4 py-2 rounded-xl transition-all bg-white text-brand-700 shadow-sm border border-slate-200 font-bold">
+                    <i class="fa-solid fa-rotate-left mr-1.5 text-brand-600"></i> Return & Exchange Policy
+                </button>
+                <button id="tabBtnShipping" onclick="switchSupportTab('shipping')" class="px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-200/60">
+                    <i class="fa-solid fa-truck-fast mr-1.5 text-slate-500"></i> Shipping Rates
+                </button>
+                <button id="tabBtnFaq" onclick="switchSupportTab('faq')" class="px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-200/60">
+                    <i class="fa-circle-question mr-1.5 text-slate-500"></i> Frequently Asked Questions
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar space-y-6">
+
+                <!-- TAB 1: RETURN & EXCHANGE POLICY -->
+                <div id="supportTabReturns" class="space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase tracking-wider mb-2">
+                            7-Day Guarantee
+                        </span>
+                        <h2 class="text-2xl font-black text-slate-900">Return & Exchange Policy</h2>
+                        <p class="text-sm text-slate-600 mt-1">We want you to be 100% satisfied with your Bannu Bazar purchase.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+                            <div class="w-8 h-8 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center font-bold">1</div>
+                            <h4 class="font-bold text-slate-800 text-sm">7 Days Return Window</h4>
+                            <p class="text-xs text-slate-500">Initiate return or exchange within 7 days of receiving your order parcel.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+                            <div class="w-8 h-8 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center font-bold">2</div>
+                            <h4 class="font-bold text-slate-800 text-sm">Free Size Exchange</h4>
+                            <p class="text-xs text-slate-500">Free exchange for Peshawari Chappal sizing or Khaadi suit color variations.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+                            <div class="w-8 h-8 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center font-bold">3</div>
+                            <h4 class="font-bold text-slate-800 text-sm">Fast Refunds</h4>
+                            <p class="text-xs text-slate-500">Refunds credited back via JazzCash, EasyPaisa or Direct Bank within 3-5 business days.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 text-sm text-slate-700 leading-relaxed">
+                        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check text-brand-600"></i> Terms & Conditions for Returns
+                        </h3>
+                        <ul class="list-disc pl-5 space-y-2 text-xs sm:text-sm text-slate-600">
+                            <li>The product must be unused, unwashed, with original price tags and packaging intact.</li>
+                            <li>Defective, damaged, or incorrect items delivered will be replaced with <strong>zero delivery cost</strong> to the customer.</li>
+                            <li>Perishable items like opened Chilgoza, organic honey, or food items are non-returnable unless delivered damaged.</li>
+                            <li>In case of a return for personal preference, nominal return shipping fees of Rs. 200 apply.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-brand-50 p-4 rounded-2xl border border-brand-200 flex items-center justify-between flex-wrap gap-3">
+                        <div>
+                            <h4 class="font-bold text-brand-900 text-sm">Need help initiating a return?</h4>
+                            <p class="text-xs text-brand-800">Contact our Bannu Bazar WhatsApp support helpline immediately.</p>
+                        </div>
+                        <a href="https://wa.me/923000000000" target="_blank" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp Helpline
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TAB 2: SHIPPING RATES & TIMELINES -->
+                <div id="supportTabShipping" class="hidden space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full uppercase tracking-wider mb-2">
+                            Nationwide Shipping
+                        </span>
+                        <h2 class="text-2xl font-black text-slate-900">Shipping Rates & Delivery Times Across Pakistan</h2>
+                        <p class="text-sm text-slate-600 mt-1">Reliable, door-step delivery via TCS, Leopard Courier, and Pakistan Post.</p>
+                    </div>
+
+                    <!-- Shipping Rate Card Summary -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-brand-600 to-emerald-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+                            <div class="relative z-10">
+                                <span class="bg-bannu-gold text-slate-900 text-[10px] font-black px-2 py-0.5 rounded uppercase">Best Value</span>
+                                <h3 class="text-2xl font-black mt-2">FREE Delivery</h3>
+                                <p class="text-xs text-emerald-100 mt-1">On all orders worth <span class="font-bold text-white">Rs. 3,000 or above</span> anywhere in Pakistan.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg">
+                            <span class="bg-white/20 text-slate-200 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Standard Flat Rate</span>
+                            <h3 class="text-2xl font-black mt-2">Rs. 200 Flat</h3>
+                            <p class="text-xs text-slate-300 mt-1">For orders below Rs. 3,000 nationwide regardless of weight up to 3kg.</p>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Timelines Table -->
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-brand-600"></i> Estimated Delivery Schedule
+                        </h3>
+
+                        <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                            <table class="w-full text-left text-xs sm:text-sm">
+                                <thead class="bg-slate-100 text-slate-600 uppercase text-[11px] font-bold">
+                                    <tr>
+                                        <th class="p-3.5">Region / City</th>
+                                        <th class="p-3.5">Estimated Time</th>
+                                        <th class="p-3.5">Courier Partner</th>
+                                        <th class="p-3.5">Payment Method</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    <tr>
+                                        <td class="p-3.5 font-bold text-slate-900">Bannu, Lakki Marwat & KP Cities</td>
+                                        <td class="p-3.5"><span class="text-emerald-600 font-bold">1 - 2 Working Days</span></td>
+                                        <td class="p-3.5">Leopard / Local Express</td>
+                                        <td class="p-3.5">COD / JazzCash</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3.5 font-bold text-slate-900">Islamabad, Rawalpindi, Peshawar & Lahore</td>
+                                        <td class="p-3.5"><span class="text-emerald-600 font-bold">2 - 3 Working Days</span></td>
+                                        <td class="p-3.5">TCS Express</td>
+                                        <td class="p-3.5">COD / Online Bank</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3.5 font-bold text-slate-900">Karachi, Quetta, Multan, Faisalabad & Major Cities</td>
+                                        <td class="p-3.5"><span class="text-emerald-600 font-bold">3 - 4 Working Days</span></td>
+                                        <td class="p-3.5">TCS / Leopard</td>
+                                        <td class="p-3.5">COD / Online Bank</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3.5 font-bold text-slate-900">Remote / Rural Areas</td>
+                                        <td class="p-3.5"><span class="text-amber-600 font-bold">4 - 5 Working Days</span></td>
+                                        <td class="p-3.5">Pakistan Post EMS</td>
+                                        <td class="p-3.5">COD Available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: FREQUENTLY ASKED QUESTIONS (FAQ) -->
+                <div id="supportTabFaq" class="hidden space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full uppercase tracking-wider mb-2">
+                            Got Questions?
+                        </span>
+                        <h2 class="text-2xl font-black text-slate-900">Frequently Asked Questions (FAQ)</h2>
+                        <p class="text-sm text-slate-600 mt-1">Find quick answers to common questions about ordering, authenticity, and payment.</p>
+                    </div>
+
+                    <!-- FAQ Accordion List -->
+                    <div class="space-y-3" id="faqAccordion">
+
+                        <!-- Item 1 -->
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden transition-all bg-slate-50/50">
+                            <button onclick="toggleFaq('faq1')" class="w-full p-4 text-left font-bold text-sm text-slate-800 flex justify-between items-center hover:bg-slate-100/80 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check text-brand-600"></i> Are Bannu Khaadi suits and Chappals 100% authentic?
+                                </span>
+                                <i id="faq1Icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div id="faq1" class="hidden p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-white">
+                                Yes, absolutely! Every item listed in our "Bannu Specials" collection—including authentic cotton Khaadi fabric, hand-stitched Peshawari/Bannu chappals, and Waziristan Chilgoza—is directly sourced from local artisans and trusted traditional craftsmen in Bannu and surrounding regions.
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden transition-all bg-slate-50/50">
+                            <button onclick="toggleFaq('faq2')" class="w-full p-4 text-left font-bold text-sm text-slate-800 flex justify-between items-center hover:bg-slate-100/80 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-truck-ramp-box text-brand-600"></i> How do I track my order status?
+                                </span>
+                                <i id="faq2Icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div id="faq2" class="hidden p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-white">
+                                Once you place an order, you will receive a unique Order Reference ID (e.g., <span class="font-mono font-bold text-brand-600">BB-8921</span>). Click on the "Track Order" button in the top menu bar, enter your Order ID, and instantly see real-time updates (Processing, Shipped, Delivered).
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden transition-all bg-slate-50/50">
+                            <button onclick="toggleFaq('faq3')" class="w-full p-4 text-left font-bold text-sm text-slate-800 flex justify-between items-center hover:bg-slate-100/80 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-hand-holding-dollar text-brand-600"></i> What payment methods do you accept?
+                                </span>
+                                <i id="faq3Icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div id="faq3" class="hidden p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-white">
+                                We accept <strong>Cash on Delivery (COD)</strong> across all major cities and towns in Pakistan. We also accept instant online mobile wallet payments via <strong>JazzCash</strong> and <strong>EasyPaisa</strong>, as well as direct Online Bank Transfers.
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden transition-all bg-slate-50/50">
+                            <button onclick="toggleFaq('faq4')" class="w-full p-4 text-left font-bold text-sm text-slate-800 flex justify-between items-center hover:bg-slate-100/80 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-tags text-brand-600"></i> How do I apply a discount promo code?
+                                </span>
+                                <i id="faq4Icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div id="faq4" class="hidden p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-white">
+                                Add items to your Shopping Bag, open the Cart Drawer, and type code <span class="bg-bannu-gold/30 text-slate-900 font-bold px-2 py-0.5 rounded">BANNU10</span> for 10% OFF or <span class="bg-bannu-gold/30 text-slate-900 font-bold px-2 py-0.5 rounded">AZADI20</span> for 20% OFF into the Promo Code box and press "Apply".
+                            </div>
+                        </div>
+
+                        <!-- Item 5 -->
+                        <div class="border border-slate-200 rounded-2xl overflow-hidden transition-all bg-slate-50/50">
+                            <button onclick="toggleFaq('faq5')" class="w-full p-4 text-left font-bold text-sm text-slate-800 flex justify-between items-center hover:bg-slate-100/80 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-boxes-packing text-brand-600"></i> What if I receive a wrong or damaged item?
+                                </span>
+                                <i id="faq5Icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div id="faq5" class="hidden p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-white">
+                                Don't worry! We offer a hassle-free 7-day replacement policy. Simply take a quick photo of the damaged parcel or incorrect size and send it to our WhatsApp helpline. We will pick up the package and send you a fresh replacement free of shipping cost.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT QUICK VIEW MODAL -->
+    <div id="quickViewModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
+        <div id="quickViewContent" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative custom-scrollbar p-6">
+            <!-- Dynamic Quick view content -->
+        </div>
+    </div>
+
+    <!-- ADMIN BACKEND DASHBOARD MODAL -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-4 border-b border-slate-200 bg-slate-900 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="bg-brand-500 text-white text-xs font-bold px-2 py-0.5 rounded">ADMIN</span>
+                    <h3 class="font-bold text-base">Bannu Bazar Store Management</h3>
+                </div>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="bg-slate-100 p-2 border-b border-slate-200 flex gap-2 text-xs font-bold">
+                <button onclick="switchAdminTab('overview')" id="adminTabOverview" class="px-4 py-2 rounded-xl bg-white text-brand-700 shadow-sm">
+                    Dashboard Overview
+                </button>
+                <button onclick="switchAdminTab('orders')" id="adminTabOrders" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-200">
+                    Customer Orders
+                </button>
+                <button onclick="switchAdminTab('products')" id="adminTabProducts" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-200">
+                    Manage Products
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-6">
+                <!-- Overview Tab -->
+                <div id="adminOverview">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="text-xs text-slate-500">Total Sales Revenue</p>
+                            <h4 id="adminTotalRevenue" class="text-2xl font-black text-brand-600 mt-1">Rs. 24,500</h4>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="text-xs text-slate-500">Total Orders Placed</p>
+                            <h4 id="adminTotalOrders" class="text-2xl font-black text-slate-900 mt-1">6 Orders</h4>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="text-xs text-slate-500">Active Inventory</p>
+                            <h4 id="adminTotalProducts" class="text-2xl font-black text-slate-900 mt-1">8 Items</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="adminOrders" class="hidden">
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 uppercase font-bold">
+                                <tr>
+                                    <th class="p-3">Order ID</th>
+                                    <th class="p-3">Customer</th>
+                                    <th class="p-3">City</th>
+                                    <th class="p-3">Total</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOrdersTable" class="divide-y divide-slate-100 text-slate-700">
+                                <!-- Dynamic Orders -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Manage Products Tab -->
+                <div id="adminProducts" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-sm text-slate-800">Inventory Management</h4>
+                        <button onclick="showAddProductModal()" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-sm">
+                            + Add New Product
+                        </button>
+                    </div>
+                    <div id="adminProductsList" class="space-y-2">
+                        <!-- Dynamic Inventory List -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs mt-auto border-t border-slate-800">
+        <div class="container mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white font-black text-base">B</div>
+                    <span class="text-lg font-black text-white">Bannu<span class="text-brand-500">Bazar</span></span>
+                </div>
+                <p class="text-slate-400 leading-relaxed">Your premier destination for authentic Bannu Khaadi, Handcrafted Peshawari Chappals, Organic Dry Fruits, and Regional Delicacies.</p>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Quick Navigation</h4>
+                <ul class="space-y-2">
+                    <li><a href="javascript:void(0)" onclick="switchView('shop')" class="hover:text-brand-400">All Products</a></li>
+                    <li><a href="javascript:void(0)" onclick="filterCategory('khaadi')" class="hover:text-brand-400">Bannu Khaadi Fabric</a></li>
+                    <li><a href="javascript:void(0)" onclick="filterCategory('chappal')" class="hover:text-brand-400">Special Peshawari Chappal</a></li>
+                    <li><a href="javascript:void(0)" onclick="filterCategory('dry-fruits')" class="hover:text-brand-400">Waziristan Chilgoza</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Customer Support</h4>
+                <ul class="space-y-2">
+                    <li><a href="javascript:void(0)" onclick="switchView('track')" class="hover:text-brand-400">Track Your Order</a></li>
+                    <li><a href="javascript:void(0)" onclick="openSupportModal('returns')" class="hover:text-brand-400">7-Day Return & Exchange Policy</a></li>
+                    <li><a href="javascript:void(0)" onclick="openSupportModal('shipping')" class="hover:text-brand-400">Shipping Rates across Pakistan</a></li>
+                    <li><a href="javascript:void(0)" onclick="openSupportModal('faq')" class="hover:text-brand-400">Frequently Asked Questions (FAQ)</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Contact & Support</h4>
+                <p class="text-slate-400 mb-2"><i class="fa-solid fa-location-dot text-brand-500 mr-2"></i> Main Bazar, Bannu City, KP, Pakistan</p>
+                <p class="text-slate-400 mb-2"><i class="fa-solid fa-phone text-brand-500 mr-2"></i> +92 300 1234567</p>
+                <p class="text-slate-400"><i class="fa-solid fa-envelope text-brand-500 mr-2"></i> support@bannubazar.pk</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-950 py-4 border-t border-slate-800 text-center text-slate-500 text-[11px]">
+            &copy; 2026 Bannu Bazar - Complete E-Commerce Platform. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // App State
+        let products = [
+            {
+                id: 'p1',
+                name: 'Authentic Bannu Khaadi Suit (Unstitched)',
+                category: 'khaadi',
+                tag: 'bannu-specials',
+                price: 3450,
+                originalPrice: 4200,
+                rating: 4.9,
+                reviewsCount: 28,
+                image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80',
+                description: 'Pure 100% handloom cotton Bannu Khaadi fabric, soft feel, highly breathable for all seasons.',
+                inStock: true
+            },
+            {
+                id: 'p2',
+                name: 'Traditional Bannu Hand-Stitched Chappal',
+                category: 'chappal',
+                tag: 'bannu-specials',
+                price: 2890,
+                originalPrice: 3500,
+                rating: 4.8,
+                reviewsCount: 42,
+                image: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=600&q=80',
+                description: 'Premium pure cow leather, double sole comfort, handcrafted by master cobblers in Bannu.',
+                inStock: true
+            },
+            {
+                id: 'p3',
+                name: 'Waziristan Roasted Pine Nuts (Chilgoza) 500g',
+                category: 'dry-fruits',
+                tag: 'bannu-specials',
+                price: 4950,
+                originalPrice: 5800,
+                rating: 5.0,
+                reviewsCount: 19,
+                image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=600&q=80',
+                description: 'Grade A fresh organic Waziristan Chilgoza. Rich in natural oils and crunchiness.',
+                inStock: true
+            },
+            {
+                id: 'p4',
+                name: 'Pure Wild Forest Organic Honey 1Kg',
+                category: 'spices-honey',
+                tag: 'bannu-specials',
+                price: 2200,
+                originalPrice: 2600,
+                rating: 4.7,
+                reviewsCount: 31,
+                image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80',
+                description: 'Unprocessed 100% raw sidr berry flower honey collected from natural forests.',
+                inStock: true
+            },
+            {
+                id: 'p5',
+                name: 'Classic Kaptaan Peshawari Chappal (Matte Black)',
+                category: 'chappal',
+                tag: '',
+                price: 3200,
+                originalPrice: 3800,
+                rating: 4.9,
+                reviewsCount: 54,
+                image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=600&q=80',
+                description: 'Famous Kaptaan style Peshawari chappal with high-grade leather finish.',
+                inStock: true
+            },
+            {
+                id: 'p6',
+                name: 'Organic Bannu Spice Blend (Garam Masala) 250g',
+                category: 'spices-honey',
+                tag: 'bannu-specials',
+                price: 850,
+                originalPrice: 1100,
+                rating: 4.8,
+                reviewsCount: 15,
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+                description: 'Hand-ground traditional recipe spice mixture for authentic Bannu Beef Painda and Pulao.',
+                inStock: true
+            },
+            {
+                id: 'p7',
+                name: 'Premium Woolen Swati Shawl for Men',
+                category: 'khaadi',
+                tag: '',
+                price: 4100,
+                originalPrice: 4800,
+                rating: 4.6,
+                reviewsCount: 22,
+                image: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=600&q=80',
+                description: 'Warm and elegant winter shawl with fine embroidery border.',
+                inStock: true
+            },
+            {
+                id: 'p8',
+                name: 'Organic Walnuts (Akhrot) without Shell 500g',
+                category: 'dry-fruits',
+                tag: '',
+                price: 1850,
+                originalPrice: 2200,
+                rating: 4.7,
+                reviewsCount: 18,
+                image: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=600&q=80',
+                description: 'Fresh light-kernel organic walnuts from Kurram Valley.',
+                inStock: true
+            }
+        ];
+
+        let cart = [];
+        let wishlist = [];
+        let appliedDiscount = 0;
+        let activeCategory = 'all';
+
+        let orders = [
+            {
+                id: 'BB-8921',
+                custName: 'Kamran Ali',
+                custCity: 'Peshawar',
+                total: 3450,
+                status: 'In Transit',
+                date: '2026-09-27'
+            },
+            {
+                id: 'BB-8922',
+                custName: 'Zubair Shah',
+                custCity: 'Islamabad',
+                total: 4950,
+                status: 'Delivered',
+                date: '2026-09-25'
+            }
+        ];
+
+        window.onload = function() {
+            renderProducts();
+            updateCartCount();
+        };
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bg = type === 'success' ? 'bg-emerald-800' : type === 'error' ? 'bg-red-800' : 'bg-slate-800';
+            toast.className = `${bg} text-white text-xs font-bold px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info text-brand-400"></i><span>${msg}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function switchView(viewName) {
+            document.getElementById('shopView').classList.add('hidden');
+            document.getElementById('trackView').classList.add('hidden');
+            document.getElementById('wishlistView').classList.add('hidden');
+
+            if(viewName === 'shop') {
+                document.getElementById('shopView').classList.remove('hidden');
+            } else if(viewName === 'track') {
+                document.getElementById('trackView').classList.remove('hidden');
+            } else if(viewName === 'wishlist') {
+                document.getElementById('wishlistView').classList.remove('hidden');
+                renderWishlist();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderProducts(itemsToRender = null) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            const list = itemsToRender || products;
+            
+            if(list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">No products found matching your filter.</div>`;
+                return;
+            }
+
+            list.forEach(p => {
+                const isWish = wishlist.includes(p.id);
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col group relative";
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden bg-slate-100 h-52">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        ${p.tag === 'bannu-specials' ? `<span class="absolute top-3 left-3 bg-bannu-gold text-slate-900 font-extrabold text-[10px] uppercase px-2 py-0.5 rounded shadow">✨ Bannu Special</span>` : ''}
+                        
+                        <button onclick="toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-600 hover:text-red-500 flex items-center justify-center transition-colors shadow">
+                            <i class="${isWish ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart'} text-xs"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center gap-1 text-amber-500 text-[11px] mb-1 font-bold">
+                                <i class="fa-solid fa-star"></i> <span>${p.rating} (${p.reviewsCount})</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">${p.name}</h3>
+                        </div>
+
+                        <div>
+                            <div class="flex items-baseline space-x-2">
+                                <span class="text-lg font-black text-slate-900">Rs. ${p.price.toLocaleString()}</span>
+                                <span class="text-xs text-slate-400 line-through">Rs. ${p.originalPrice.toLocaleString()}</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 mt-3">
+                                <button onclick="openQuickView('${p.id}')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
+                                    Quick View
+                                </button>
+                                <button onclick="addToCart('${p.id}')" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-plus text-[10px]"></i> Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('productCount').innerText = `${list.length} Items Available`;
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all";
+            });
+            
+            const activeBtn = document.getElementById(`catBtn-${cat}`);
+            if(activeBtn) {
+                activeBtn.className = "cat-btn bg-brand-600 text-white font-bold text-xs px-4 py-2 rounded-xl whitespace-nowrap transition-all shadow-sm";
+            }
+
+            if(cat === 'all') {
+                document.getElementById('categoryTitle').innerText = "All Products";
+                renderProducts(products);
+            } else if(cat === 'bannu-specials') {
+                document.getElementById('categoryTitle').innerText = "✨ Bannu Specials";
+                renderProducts(products.filter(p => p.tag === 'bannu-specials'));
+            } else {
+                const names = {
+                    'khaadi': 'Bannu Khaadi Fabric',
+                    'chappal': 'Handcrafted Chappals',
+                    'dry-fruits': 'Chilgoza & Dry Fruits',
+                    'spices-honey': 'Pure Honey & Spices'
+                };
+                document.getElementById('categoryTitle').innerText = names[cat] || 'Category Items';
+                renderProducts(products.filter(p => p.category === cat));
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        function handleSearchMobile() {
+            const query = document.getElementById('searchInputMobile').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        function scrollToProducts() {
+            document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartBackdrop');
+            if(drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+                backdrop.classList.remove('hidden');
+                renderCart();
+            } else {
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function addToCart(productId) {
+            const existing = cart.find(item => item.id === productId);
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({ id: productId, qty: 1 });
+            }
+            updateCartCount();
+            showToast('Item added to Shopping Bag!', 'success');
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            renderCart();
+            updateCartCount();
+        }
+
+        function changeQty(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    renderCart();
+                    updateCartCount();
+                }
+            }
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').innerText = count;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            container.innerHTML = '';
+
+            if(cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-slate-400 space-y-3">
+                        <i class="fa-solid fa-bag-shopping text-4xl text-slate-300"></i>
+                        <p class="font-bold text-sm">Your bag is empty</p>
+                        <p class="text-xs">Add Bannu Specials to get started!</p>
+                    </div>
+                `;
+                document.getElementById('cartSubtotal').innerText = 'Rs. 0';
+                document.getElementById('cartTotal').innerText = 'Rs. 0';
+                return;
+            }
+
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const p = products.find(prod => prod.id === item.id);
+                if(!p) return;
+                const itemTotal = p.price * item.qty;
+                subtotal += itemTotal;
+
+                const div = document.createElement('div');
+                div.className = "flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/70";
+                div.innerHTML = `
+                    <img src="${p.image}" class="w-16 h-16 object-cover rounded-xl border border-slate-200">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-xs text-slate-800 truncate">${p.name}</h4>
+                        <p class="text-xs font-black text-brand-600 mt-0.5">Rs. ${p.price.toLocaleString()}</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <button onclick="changeQty('${p.id}', -1)" class="w-6 h-6 rounded-lg bg-slate-200 hover:bg-slate-300 text-xs font-bold">-</button>
+                            <span class="text-xs font-bold px-1">${item.qty}</span>
+                            <button onclick="changeQty('${p.id}', 1)" class="w-6 h-6 rounded-lg bg-slate-200 hover:bg-slate-300 text-xs font-bold">+</button>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart('${p.id}')" class="text-slate-400 hover:text-red-500 p-1">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+
+            const discountAmount = Math.round(subtotal * appliedDiscount);
+            const shipping = subtotal >= 3000 ? 0 : (subtotal > 0 ? 200 : 0);
+            const total = subtotal - discountAmount + shipping;
+
+            document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString()}`;
+            document.getElementById('cartShipping').innerText = shipping === 0 ? 'FREE' : `Rs. ${shipping}`;
+            
+            if(appliedDiscount > 0) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('cartDiscount').innerText = `-Rs. ${discountAmount.toLocaleString()}`;
+            } else {
+                document.getElementById('discountRow').style.display = 'none';
+            }
+
+            document.getElementById('cartTotal').innerText = `Rs. ${total.toLocaleString()}`;
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promoInput').value.trim().toUpperCase();
+            if(code === 'BANNU10') {
+                appliedDiscount = 0.10;
+                showToast('10% Discount Applied!', 'success');
+            } else if(code === 'AZADI20') {
+                appliedDiscount = 0.20;
+                showToast('20% Discount Applied!', 'success');
+            } else {
+                showToast('Invalid Coupon Code', 'error');
+                appliedDiscount = 0;
+            }
+            renderCart();
+        }
+
+        function toggleWishlist(productId) {
+            if(wishlist.includes(productId)) {
+                wishlist = wishlist.filter(id => id !== productId);
+                showToast('Removed from Wishlist');
+            } else {
+                wishlist.push(productId);
+                showToast('Added to Wishlist!', 'success');
+            }
+            const badge = document.getElementById('wishlistBadge');
+            badge.innerText = wishlist.length;
+            if(wishlist.length > 0) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+
+            renderProducts();
+            if(!document.getElementById('wishlistView').classList.contains('hidden')) {
+                renderWishlist();
+            }
+        }
+
+        function renderWishlist() {
+            const grid = document.getElementById('wishlistGrid');
+            grid.innerHTML = '';
+            if(wishlist.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">Your wishlist is empty.</div>`;
+                return;
+            }
+
+            wishlist.forEach(id => {
+                const p = products.find(prod => prod.id === id);
+                if(!p) return;
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl border border-slate-200 flex space-x-4 items-center";
+                card.innerHTML = `
+                    <img src="${p.image}" class="w-20 h-20 object-cover rounded-xl">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-slate-900">${p.name}</h4>
+                        <p class="text-xs font-black text-brand-600 mt-1">Rs. ${p.price.toLocaleString()}</p>
+                        <button onclick="addToCart('${p.id}')" class="mt-2 px-3 py-1 bg-brand-600 text-white text-xs font-bold rounded-lg">Add to Cart</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openCheckoutModal() {
+            if(cart.length === 0) {
+                showToast('Your cart is empty', 'error');
+                return;
+            }
+            toggleCartDrawer();
+
+            let subtotal = cart.reduce((sum, item) => {
+                const p = products.find(prod => prod.id === item.id);
+                return sum + (p ? p.price * item.qty : 0);
+            }, 0);
+            
+            const shipping = subtotal >= 3000 ? 0 : 200;
+            const total = subtotal - Math.round(subtotal * appliedDiscount) + shipping;
+
+            document.getElementById('checkoutFinalAmount').innerText = `Rs. ${total.toLocaleString()}`;
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            const orderId = 'BB-' + Math.floor(1000 + Math.random() * 9000);
+            const name = document.getElementById('custName').value;
+            const city = document.getElementById('custCity').value;
+
+            let subtotal = cart.reduce((sum, item) => {
+                const p = products.find(prod => prod.id === item.id);
+                return sum + (p ? p.price * item.qty : 0);
+            }, 0);
+            const total = subtotal - Math.round(subtotal * appliedDiscount) + (subtotal >= 3000 ? 0 : 200);
+
+            orders.unshift({
+                id: orderId,
+                custName: name,
+                custCity: city,
+                total: total,
+                status: 'Processing',
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            cart = [];
+            updateCartCount();
+            closeCheckoutModal();
+            
+            showToast(`Order #${orderId} Placed Successfully!`, 'success');
+            
+            // Switch to Track View automatically
+            switchView('track');
+            document.getElementById('trackInput').value = orderId;
+            handleTrackOrder();
+        }
+
+        function handleTrackOrder() {
+            const query = document.getElementById('trackInput').value.trim().toUpperCase();
+            const resContainer = document.getElementById('trackResult');
+            
+            const found = orders.find(o => o.id === query);
+            resContainer.classList.remove('hidden');
+
+            if(!found) {
+                resContainer.innerHTML = `
+                    <div class="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl text-center font-bold">
+                        No order found with ID "${query}". Please check your Reference ID.
+                    </div>
+                `;
+                return;
+            }
+
+            resContainer.innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-500">Order ID: <strong class="text-slate-900 font-mono">${found.id}</strong></span>
+                        <span class="px-2.5 py-1 bg-brand-100 text-brand-800 font-bold rounded-full">${found.status}</span>
+                    </div>
+                    <div class="text-xs text-slate-600">
+                        <p>Customer: <strong>${found.custName} (${found.custCity})</strong></p>
+                        <p>Order Total: <strong>Rs. ${found.total.toLocaleString()}</strong></p>
+                        <p>Date: <strong>${found.date}</strong></p>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-[10px] sm:text-xs font-bold text-slate-500">
+                        <div class="text-emerald-600"><i class="fa-solid fa-circle-check"></i> Order Placed</div>
+                        <div class="${found.status !== 'Processing' ? 'text-emerald-600' : 'text-slate-400'}"><i class="fa-solid fa-box"></i> Packed</div>
+                        <div class="${found.status === 'In Transit' || found.status === 'Delivered' ? 'text-emerald-600' : 'text-slate-400'}"><i class="fa-solid fa-truck"></i> Shipped</div>
+                        <div class="${found.status === 'Delivered' ? 'text-emerald-600' : 'text-slate-400'}"><i class="fa-solid fa-house"></i> Delivered</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openSupportModal(defaultTab = 'returns') {
+            document.getElementById('supportModal').classList.remove('hidden');
+            switchSupportTab(defaultTab);
+        }
+
+        function closeSupportModal() {
+            document.getElementById('supportModal').classList.add('hidden');
+        }
+
+        function switchSupportTab(tabName) {
+            const tabReturns = document.getElementById('supportTabReturns');
+            const tabShipping = document.getElementById('supportTabShipping');
+            const tabFaq = document.getElementById('supportTabFaq');
+
+            const btnReturns = document.getElementById('tabBtnReturns');
+            const btnShipping = document.getElementById('tabBtnShipping');
+            const btnFaq = document.getElementById('tabBtnFaq');
+
+            // Reset all tabs
+            tabReturns.classList.add('hidden');
+            tabShipping.classList.add('hidden');
+            tabFaq.classList.add('hidden');
+
+            btnReturns.className = "px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-200/60";
+            btnShipping.className = "px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-200/60";
+            btnFaq.className = "px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-200/60";
+
+            if(tabName === 'returns') {
+                tabReturns.classList.remove('hidden');
+                btnReturns.className = "px-4 py-2 rounded-xl transition-all bg-white text-brand-700 shadow-sm border border-slate-200 font-bold";
+            } else if(tabName === 'shipping') {
+                tabShipping.classList.remove('hidden');
+                btnShipping.className = "px-4 py-2 rounded-xl transition-all bg-white text-brand-700 shadow-sm border border-slate-200 font-bold";
+            } else if(tabName === 'faq') {
+                tabFaq.classList.remove('hidden');
+                btnFaq.className = "px-4 py-2 rounded-xl transition-all bg-white text-brand-700 shadow-sm border border-slate-200 font-bold";
+            }
+        }
+
+        function toggleFaq(faqId) {
+            const target = document.getElementById(faqId);
+            const icon = document.getElementById(`${faqId}Icon`);
+            if(target.classList.contains('hidden')) {
+                target.classList.remove('hidden');
+                if(icon) icon.classList.add('rotate-180');
+            } else {
+                target.classList.add('hidden');
+                if(icon) icon.classList.remove('rotate-180');
+            }
+        }
+
+        function openQuickView(productId) {
+            const p = products.find(prod => prod.id === productId);
+            if(!p) return;
+            const container = document.getElementById('quickViewContent');
+            container.innerHTML = `
+                <button onclick="closeQuickView()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl border border-slate-200">
+                    <div class="space-y-4">
+                        <span class="bg-brand-100 text-brand-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">${p.category}</span>
+                        <h3 class="text-xl font-black text-slate-900">${p.name}</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">${p.description}</p>
+                        <div class="text-xl font-black text-slate-900">Rs. ${p.price.toLocaleString()}</div>
+                        <button onclick="addToCart('${p.id}'); closeQuickView();" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md">
+                            Add to Cart Now
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('quickViewModal').classList.remove('hidden');
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickViewModal').classList.add('hidden');
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            renderAdminData();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('adminOverview').classList.add('hidden');
+            document.getElementById('adminOrders').classList.add('hidden');
+            document.getElementById('adminProducts').classList.add('hidden');
+
+            document.getElementById('adminTabOverview').className = "px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-200";
+            document.getElementById('adminTabOrders').className = "px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-200";
+            document.getElementById('adminTabProducts').className = "px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-200";
+
+            if(tab === 'overview') {
+                document.getElementById('adminOverview').classList.remove('hidden');
+                document.getElementById('adminTabOverview').className = "px-4 py-2 rounded-xl bg-white text-brand-700 shadow-sm font-bold";
+            } else if(tab === 'orders') {
+                document.getElementById('adminOrders').classList.remove('hidden');
+                document.getElementById('adminTabOrders').className = "px-4 py-2 rounded-xl bg-white text-brand-700 shadow-sm font-bold";
+            } else if(tab === 'products') {
+                document.getElementById('adminProducts').classList.remove('hidden');
+                document.getElementById('adminTabProducts').className = "px-4 py-2 rounded-xl bg-white text-brand-700 shadow-sm font-bold";
+            }
+        }
+
+        function renderAdminData() {
+            // Render Table
+            const tbody = document.getElementById('adminOrdersTable');
+            tbody.innerHTML = '';
+            orders.forEach(o => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 font-bold font-mono text-slate-900">${o.id}</td>
+                    <td class="p-3">${o.custName}</td>
+                    <td class="p-3">${o.custCity}</td>
+                    <td class="p-3 font-bold">Rs. ${o.total.toLocaleString()}</td>
+                    <td class="p-3"><span class="bg-brand-100 text-brand-800 px-2 py-0.5 rounded font-bold">${o.status}</span></td>
+                    <td class="p-3">
+                        <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-slate-100 border border-slate-200 rounded p-1 text-[11px]">
+                            <option ${o.status==='Processing'?'selected':''}>Processing</option>
+                            <option ${o.status==='In Transit'?'selected':''}>In Transit</option>
+                            <option ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Render Product List
+            const pList = document.getElementById('adminProductsList');
+            pList.innerHTML = '';
+            products.forEach(p => {
+                const item = document.createElement('div');
+                item.className = "flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs";
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${p.image}" class="w-10 h-10 object-cover rounded-lg">
+                        <div>
+                            <p class="font-bold text-slate-800">${p.name}</p>
+                            <p class="text-slate-500">Rs. ${p.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 font-bold">Delete</button>
+                `;
+                pList.appendChild(item);
+            });
+        }
+
+        function updateOrderStatus(id, newStatus) {
+            const o = orders.find(order => order.id === id);
+            if(o) {
+                o.status = newStatus;
+                showToast(`Order #${id} status updated to ${newStatus}`, 'success');
+            }
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            renderProducts();
+            renderAdminData();
+            showToast('Product deleted from store', 'error');
+        }
+
+        function showAddProductModal() {
+            const name = prompt("Enter product name:");
+            if(!name) return;
+            const price = parseInt(prompt("Enter product price (PKR):"));
+            if(!price) return;
+
+            const newP = {
+                id: 'p' + (products.length + 1),
+                name: name,
+                category: 'khaadi',
+                tag: 'bannu-specials',
+                price: price,
+                originalPrice: price + 500,
+                rating: 5.0,
+                reviewsCount: 1,
+                image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80',
+                description: 'Newly added store item.',
+                inStock: true
+            };
+            products.unshift(newP);
+            renderProducts();
+            renderAdminData();
+            showToast('New Product Listed Successfully!', 'success');
+        }
+    </script>
+</body>
+</html>
